@@ -1,0 +1,745 @@
+export interface DayMission {
+  dayNum: number;
+  title: string;
+  mission: string;
+  practice: string[];
+  miniBuild?: string;
+  exitCriteria: string;
+}
+
+export interface TimedAssessment {
+  title: string;
+  durationMinutes: number;
+  prompt: string;
+}
+
+export interface TopicDetails {
+  id: string;
+  title: string;
+  phaseNum: number;
+  objective: string;
+  technology: string;
+  aiStage: string;
+  dayMissions: DayMission[];
+  exitCriteria: string[];
+  timedAssessment?: TimedAssessment;
+  milestones: string[];
+  capabilitiesUnlocked: string[];
+}
+
+export const syllabusData: Record<string, TopicDetails> = {
+  // Phase 0: Python Core & Fundamentals (Volume 1)
+  'phase-0': {
+    id: 'phase-0',
+    title: 'Phase 0: Python Core & Fundamentals',
+    phaseNum: 0,
+    objective: 'Establish a rock-solid algorithmic and object-oriented foundation in Python. Write code manually without AI assistance.',
+    technology: 'Python 3.12',
+    aiStage: 'Stage 1 — Zero AI (All code written physically by hand)',
+    milestones: [
+      'Write modular, clean, and typed Python code',
+      'Solve base algorithm structures from memory',
+      'Pass Phase 0 exit gate under 45 minutes'
+    ],
+    capabilitiesUnlocked: ['Modular logic structures', 'Object-Oriented Design', 'Async Concurrency'],
+    exitCriteria: [
+      'Can you implement a multi-class system from memory in under 45 minutes?',
+      'Can you explain the difference between sync and async event loops?',
+      'Do you have 70+ practice scripts committed to GitHub?'
+    ],
+    dayMissions: [
+      {
+        dayNum: 1,
+        title: 'Variables, Types & Flow Control',
+        mission: 'Anchor Python variables, data types, standard input/output, and conditionals.',
+        practice: ['Temperature converter', 'Grade calculator', 'Number reverser', 'Vowel counter'],
+        miniBuild: 'CLI Calculator with robust inputs validation and loop-until-quit logic.',
+        exitCriteria: 'Implement calculator without lookup in <15 minutes.'
+      },
+      {
+        dayNum: 2,
+        title: 'Data Structures & Iterators',
+        mission: 'Master lists, dictionaries, tuples, sets, and comprehension iterations.',
+        practice: ['List deduplicator', 'Word frequency counter', 'Dict value sorter', 'Set intersection calculator'],
+        miniBuild: 'CLI Student Gradebook managing dynamic lists of student records and grade stats.',
+        exitCriteria: 'Write grade aggregation math from memory.'
+      }
+    ]
+  },
+  'week-1': {
+    id: 'week-1',
+    title: 'Week 1: Python Syntax & Controls',
+    phaseNum: 0,
+    objective: 'Rebuild core coding speed and syntax fluency without automatic code completions.',
+    technology: 'Python',
+    aiStage: 'Stage 1 — Zero AI',
+    milestones: ['Write 20+ basic scripts', 'Implement CLI tools'],
+    capabilitiesUnlocked: ['Syntax fluency', 'Variable scoping', 'Basic algorithm writing'],
+    exitCriteria: [
+      'Implement variables, logical branches, and loops from memory',
+      'Verify clean docstring styling on all functions'
+    ],
+    dayMissions: [
+      {
+        dayNum: 3,
+        title: 'Functions & Scopes',
+        mission: 'Define modular functions, explore global/local variable scopes, and use default parameters.',
+        practice: ['Recursive factorial tracker', 'Prime number validator', 'Anagram comparison solver'],
+        miniBuild: 'CLI Library catalog search tool matching titles, categories, and availability.',
+        exitCriteria: 'Write recursive functions under 10 minutes.'
+      }
+    ]
+  },
+  'week-2': {
+    id: 'week-2',
+    title: 'Week 2: OOP & Asynchronous Python',
+    phaseNum: 0,
+    objective: 'Advance to object-oriented architecture and asynchronous concurrency primitives.',
+    technology: 'Python Asyncio',
+    aiStage: 'Stage 1 — Zero AI',
+    milestones: ['Build multi-class system', 'Async data scraper benchmark'],
+    capabilitiesUnlocked: ['Class encapsulation', 'Inheritance', 'Event loop scheduling'],
+    exitCriteria: [
+      'Write multi-class inventory simulator in <40 mins',
+      'Benchmark async scraper vs sync scraper'
+    ],
+    dayMissions: [
+      {
+        dayNum: 4,
+        title: 'Object Oriented Programming',
+        mission: 'Model real-world entities using classes, inheritance, dunder methods, and encapsulations.',
+        practice: ['Bank Account manager', 'Inventory item inheritance tracker', 'Custom exception handler'],
+        miniBuild: 'OOP RPG Battle simulator where custom hero classes duel enemy monsters.',
+        exitCriteria: 'Verify encapsulation properties from memory.'
+      },
+      {
+        dayNum: 5,
+        title: 'Asynchronous Concurrency',
+        mission: 'Understand cooperative multitasking, event loops, async/await, and asyncio.gather().',
+        practice: ['Sync vs Async sleeper comparisons', 'Concurrent local file reader'],
+        miniBuild: 'Async API data simulator fetching from 3 endpoints concurrently.',
+        exitCriteria: 'Explain the difference between threading and async loops.'
+      }
+    ],
+    timedAssessment: {
+      title: 'Phase 0 Exit Gate Assessment',
+      durationMinutes: 45,
+      prompt: 'Write a complete CLI Inventory and Order management system in Python from scratch, including classes, stock reduction thread-simulation, and input loop. Do not use AI or external help.'
+    }
+  },
+
+  // Phase 1: SQL Strengthening & Mastery (Volume 2 Month 1)
+  'phase-1': {
+    id: 'phase-1',
+    title: 'Phase 1: SQL Strengthening & Database Schema Design',
+    phaseNum: 1,
+    objective: 'Transition to relational databases. Write raw SQL queries and design robust schemas.',
+    technology: 'SQL / PostgreSQL',
+    aiStage: 'Stage 1 — Zero AI (Write all queries in DB console manually)',
+    milestones: [
+      'Design fully normalized relational databases (3NF)',
+      'Master inner, outer, and self-joins',
+      'Optimize query execution plans'
+    ],
+    capabilitiesUnlocked: ['Relational Database design', 'Index tuning', 'Query optimization'],
+    exitCriteria: [
+      'Can you write a 3-table analytical join in under 15 minutes?',
+      'Can you optimize a slow sequential scan using a custom index?'
+    ],
+    dayMissions: []
+  },
+  'week-3': {
+    id: 'week-3',
+    title: 'Week 3: Database Schemas & Joins',
+    phaseNum: 1,
+    objective: 'Establish table structures, constraints, primary/foreign keys, and data normalization.',
+    technology: 'SQL / PostgreSQL',
+    aiStage: 'Stage 1 — Zero AI',
+    milestones: ['Draw normalized ERDs', 'Execute multi-join SELECTs'],
+    capabilitiesUnlocked: ['Data integrity', 'ERD mapping', 'JOIN execution'],
+    exitCriteria: [
+      'Define tables with appropriate constraints',
+      'Explain 1NF, 2NF, 3NF difference'
+    ],
+    dayMissions: [
+      {
+        dayNum: 6,
+        title: 'Relational Database Schema Design',
+        mission: 'Create tables, define foreign keys, and map relational constraints (one-to-many, many-to-many).',
+        practice: ['DML orders schema', 'University enrollment database script'],
+        miniBuild: 'Normalized database script mapping an e-commerce platform schema.',
+        exitCriteria: 'Create junction tables from memory.'
+      }
+    ]
+  },
+  'week-4': {
+    id: 'week-4',
+    title: 'Week 4: Window Functions & Transactions',
+    phaseNum: 1,
+    objective: 'Master advanced query analytics and database transactional safety.',
+    technology: 'SQL / PostgreSQL',
+    aiStage: 'Stage 1 — Zero AI',
+    milestones: ['Write analytical window queries', 'Implement ACID transactions'],
+    capabilitiesUnlocked: ['Window analytics', 'ACID guarantees', 'Query planning'],
+    exitCriteria: [
+      'Write monthly total revenue LAG calculation',
+      'Analyze index impact via EXPLAIN ANALYZE'
+    ],
+    dayMissions: [
+      {
+        dayNum: 7,
+        title: 'Advanced Analytical Queries',
+        mission: 'Learn analytical Window functions: ROW_NUMBER, RANK, DENSE_RANK, LEAD, and LAG.',
+        practice: ['Category sales rank query', 'Month-on-month customer spend difference calculator'],
+        miniBuild: 'Database analytics script auditing student test score distributions.',
+        exitCriteria: 'Explain partition sorting vs standard group by.'
+      }
+    ],
+    timedAssessment: {
+      title: 'Phase 1 Exit Gate Assessment',
+      durationMinutes: 15,
+      prompt: 'Write a single SQL query performing a 3-table join calculating running total revenue grouped by country and ranked by product category, returning only rank < 3.'
+    }
+  },
+
+  // Phase 2: Frontend Layouts & Logic (Volume 2 Month 2)
+  'phase-2': {
+    id: 'phase-2',
+    title: 'Phase 2: Frontend Layouts & Logic',
+    phaseNum: 2,
+    objective: 'Build semantic, responsive interfaces and execute DOM interactions using Vanilla CSS and JavaScript.',
+    technology: 'HTML5 / CSS3 / Vanilla JS',
+    aiStage: 'Stage 1 — Zero AI (Manual CSS grid layouts, zero UI component libraries)',
+    milestones: [
+      'Design fully responsive layout systems without CSS frameworks',
+      'Handle async fetch requests and render UI dynamically',
+      'Maintain sub-pixel alignment across grid grids'
+    ],
+    capabilitiesUnlocked: ['CSS Grids & Flexbox layouts', 'Asynchronous API fetching', 'DOM node manipulation'],
+    exitCriteria: [
+      'Can you implement a responsive landing page layout in under 1 hour?',
+      'Can you fetch data from a public API and display it in a grid without templates?'
+    ],
+    dayMissions: []
+  },
+  'week-5': {
+    id: 'week-5',
+    title: 'Week 5: Semantic Layouts & CSS Grids',
+    phaseNum: 2,
+    objective: 'Implement grid grid systems, custom styling variables, and device-responsive typography.',
+    technology: 'HTML5 / CSS3',
+    aiStage: 'Stage 1 — Zero AI',
+    milestones: ['Build responsive navbar', 'Create grid grid layout'],
+    capabilitiesUnlocked: ['Responsive structure', 'CSS custom properties', 'Grid grids alignment'],
+    exitCriteria: [
+      'Write responsive media query queries from memory',
+      'Implement flexbox flex alignments'
+    ],
+    dayMissions: [
+      {
+        dayNum: 8,
+        title: 'Semantic HTML & Layout Foundations',
+        mission: 'Construct semantic web structures using <header>, <nav>, <section>, <article>, and <footer> tags.',
+        practice: ['Multi-column articles template', 'Contact submission form styling'],
+        miniBuild: 'Responsive Developer Portfolio Landing Page without styling frameworks.',
+        exitCriteria: 'Ensure 100% semantic validation.'
+      }
+    ]
+  },
+  'week-6': {
+    id: 'week-6',
+    title: 'Week 6: JavaScript DOM & Async Integration',
+    phaseNum: 2,
+    objective: 'Write Vanilla JS algorithms to manipulate DOM nodes and fetch network resources.',
+    technology: 'ES6+ JavaScript',
+    aiStage: 'Stage 1 — Zero AI',
+    milestones: ['Attach event delegation hooks', 'Handle fetch responses'],
+    capabilitiesUnlocked: ['Event loop capture', 'Fetch API methods', 'DOM injection'],
+    exitCriteria: [
+      'Handle API errors gracefully during network fetch',
+      'Write event delegation handler'
+    ],
+    dayMissions: [
+      {
+        dayNum: 9,
+        title: 'Asynchronous Network Requests',
+        mission: 'Connect to external API endpoints using async/await, fetching and formatting JSON arrays.',
+        practice: ['Weather API data grabber', 'User profiles dynamic renderer'],
+        miniBuild: 'Search dashboard showing open git issues from public repositories.',
+        exitCriteria: 'Correctly implement Promise.all() concurrency.'
+      }
+    ],
+    timedAssessment: {
+      title: 'Phase 2 Exit Gate Assessment',
+      durationMinutes: 60,
+      prompt: 'Build a responsive search dashboard that fetches data from a public JSON endpoint, lists elements in a grid, and supports search filtering. Standard Vanilla JS and CSS only.'
+    }
+  },
+
+  // Phase 3: React Core & State (Volume 2 Month 3)
+  'phase-3': {
+    id: 'phase-3',
+    title: 'Phase 3: React Core & State Management',
+    phaseNum: 3,
+    objective: 'Transition to reactive components. Master props, states, hooks, and TypeScript types.',
+    technology: 'React / TypeScript',
+    aiStage: 'Stage 2 — AI structural reading only (concept hints allowed)',
+    milestones: [
+      'Compose typed props and state interfaces',
+      'Master hooks lifecycles (useState, useEffect, useRef)',
+      'Render complex dynamic lists safely'
+    ],
+    capabilitiesUnlocked: ['React component design', 'Type-safe state mapping', 'Side-effect management'],
+    exitCriteria: [
+      'Can you implement custom React hooks for fetch/storage in under 30 mins?',
+      'Can you type components, events, and context providers without any errors?'
+    ],
+    dayMissions: []
+  },
+  'week-7': {
+    id: 'week-7',
+    title: 'Week 7: Components & State Hooks',
+    phaseNum: 3,
+    objective: 'Build modular, reusable React elements and handle state hooks.',
+    technology: 'React',
+    aiStage: 'Stage 2 — Hints allowed',
+    milestones: ['Write child components', 'Lift state up to parent'],
+    capabilitiesUnlocked: ['State encapsulation', 'Unidirectional data flow', 'Event mapping'],
+    exitCriteria: [
+      'Lift state from three sibling components',
+      'Handle forms validation in state'
+    ],
+    dayMissions: [
+      {
+        dayNum: 10,
+        title: 'Lifting State Up',
+        mission: 'Manage parent-child data flows, passing functions as props to update parent states.',
+        practice: ['Todo card list', 'Counter component with multiplier'],
+        miniBuild: 'Interactive task planner organizing tasks into stages.',
+        exitCriteria: 'Handle updates to arrays in state safely.'
+      }
+    ]
+  },
+  'week-8': {
+    id: 'week-8',
+    title: 'Week 8: Side Effects & TypeScript Integration',
+    phaseNum: 3,
+    objective: 'Synchronize external state using useEffect and type check all data.',
+    technology: 'React + TypeScript',
+    aiStage: 'Stage 2 — Hints allowed',
+    milestones: ['Integrate typed props', 'Execute cleanups on unmount'],
+    capabilitiesUnlocked: ['Props typing', 'Effect dependency tuning', 'Refs caching'],
+    exitCriteria: [
+      'Write type-safe API result container',
+      'Prevent infinite re-renders in useEffect'
+    ],
+    dayMissions: [
+      {
+        dayNum: 11,
+        title: 'Effect Hook Dependency Control',
+        mission: 'Configure dependency arrays, execute cleanup tasks, and track refs with useRef.',
+        practice: ['Window size observer hook', 'Debounced search query tracker'],
+        miniBuild: 'Stock index tracker dashboard displaying mock stock adjustments.',
+        exitCriteria: 'Create custom useLocalStorage hook.'
+      }
+    ]
+  },
+
+  // Phase 4: React Complex (Volume 2 Month 4)
+  'phase-4': {
+    id: 'phase-4',
+    title: 'Phase 4: React + TS Complex Development',
+    phaseNum: 4,
+    objective: 'Develop production-grade full-stack single-page interfaces with routing and global state.',
+    technology: 'React / Router / Context',
+    aiStage: 'Stage 2 — AI structural reading only (No direct code generation)',
+    milestones: [
+      'Configure single-page router flows',
+      'Build global state container via Context API',
+      'Complete Expense Tracker Pro portfolio capstone'
+    ],
+    capabilitiesUnlocked: ['SPA Routing', 'Global State Containers', 'Form Validations'],
+    exitCriteria: [
+      'Can you configure React Router nested routing layouts from memory?',
+      'Is Expense Tracker Pro fully responsive and functional?'
+    ],
+    dayMissions: []
+  },
+  'week-9': {
+    id: 'week-9',
+    title: 'Week 9: React Router & Context API',
+    phaseNum: 4,
+    objective: 'Configure nested routing grids and manage global states without prop drilling.',
+    technology: 'React Router / Context',
+    aiStage: 'Stage 2 — Hints allowed',
+    milestones: ['Set up nested layout routes', 'Create Context Provider'],
+    capabilitiesUnlocked: ['Context state sharing', 'Route guard redirection', 'Theme shifting'],
+    exitCriteria: [
+      'Provide user state via Context to 5 deep children',
+      'Enforce private route guards'
+    ],
+    dayMissions: [
+      {
+        dayNum: 12,
+        title: 'Global State Context Providers',
+        mission: 'Wrap your application layout in Context Providers, supplying auth details across routes.',
+        practice: ['Theme context switcher', 'Active checkout basket manager'],
+        miniBuild: 'User dashboard layout featuring responsive nested view panels.',
+        exitCriteria: 'Optimize context renders using custom hook selectors.'
+      }
+    ]
+  },
+  'week-10': {
+    id: 'week-10',
+    title: 'Week 10: Capstone (Expense Tracker Pro)',
+    phaseNum: 4,
+    objective: 'Consolidate React, TypeScript, and state storage into a portfolio-grade capstone.',
+    technology: 'React / TS / Context',
+    aiStage: 'Stage 2 — Hints allowed',
+    milestones: ['Build charts from scratch', 'Persist user profile state'],
+    capabilitiesUnlocked: ['Financial transaction mathematics', 'Data visualization', 'Persistence layer tuning'],
+    exitCriteria: [
+      'Implement transaction history sorting & filtering',
+      'Complete local data exports to CSV'
+    ],
+    dayMissions: [
+      {
+        dayNum: 13,
+        title: 'Expense Tracker Pro Capstone',
+        mission: 'Create a full dashboard visualizing transactions, income, categories, and monthly analytics.',
+        practice: ['Dynamic filter operations', 'Mock CSV exporter script'],
+        miniBuild: 'Expense Tracker Pro complete build with clean layout transitions.',
+        exitCriteria: 'Must compile with zero TypeScript compiler errors.'
+      }
+    ],
+    timedAssessment: {
+      title: 'Phase 4 Exit Gate Assessment',
+      durationMinutes: 180,
+      prompt: 'Implement a complete task board (Kanban) with columns, custom drag-and-drop mechanics (or click to move), local storage history logs, and priority filter, fully typed in TypeScript under 3 hours.'
+    }
+  },
+
+  // Phase 5: FastAPI Backend (Volume 3 Month 5)
+  'phase-5': {
+    id: 'phase-5',
+    title: 'Phase 5: FastAPI Backend Services',
+    phaseNum: 5,
+    objective: 'Build asynchronous, production-ready REST APIs. Model schemas, migrate databases, and secure routes.',
+    technology: 'FastAPI / SQLAlchemy / Alembic',
+    aiStage: 'Stage 3 — Review & Optimize (Write backend logic yourself, use AI for post-build refactoring)',
+    milestones: [
+      'Write asynchronous API routers and lifespan context managers',
+      'Manage SQL schema changes via Alembic migrations',
+      'Implement JWT token authentication and role validation rules'
+    ],
+    capabilitiesUnlocked: ['Asynchronous API engineering', 'DB Migrations control', 'OAuth2/JWT Security'],
+    exitCriteria: [
+      'Can you implement a complete JWT login authentication endpoint in <45 mins?',
+      'Can you execute Alembic migrations without locking the database?'
+    ],
+    dayMissions: []
+  },
+  'week-11': {
+    id: 'week-11',
+    title: 'Week 11: Async Routers & Pydantic',
+    phaseNum: 5,
+    objective: 'Define type-safe Pydantic request models and implement router endpoints.',
+    technology: 'FastAPI / Pydantic',
+    aiStage: 'Stage 3 — Review after build',
+    milestones: ['Create async path routers', 'Validate inputs with Pydantic'],
+    capabilitiesUnlocked: ['Type coercion validation', 'ASGI asynchronous loops', 'OpenAPI auto docs'],
+    exitCriteria: [
+      'Validate complex nested lists using Pydantic Field()',
+      'Set custom error response schemas'
+    ],
+    dayMissions: [
+      {
+        dayNum: 14,
+        title: 'FastAPI Asynchronous Lifespans',
+        mission: 'Initialize app configurations, manage database engines startup, and handle route definitions.',
+        practice: ['Pydantic phone validator', 'Async mock network fetcher'],
+        miniBuild: 'Task tracker REST API exposing standard CRUD operations.',
+        exitCriteria: 'Verify OpenAPI Swagger docs render all custom fields.'
+      }
+    ]
+  },
+  'week-12': {
+    id: 'week-12',
+    title: 'Week 12: SQLAlchemy ORM & Alembic',
+    phaseNum: 5,
+    objective: 'Manage relational data mappings and database schema migrations asynchronously.',
+    technology: 'SQLAlchemy / Alembic',
+    aiStage: 'Stage 3 — Review after build',
+    milestones: ['Generate Alembic versions', 'Perform relationship queries'],
+    capabilitiesUnlocked: ['ORM session control', 'Schema version history', 'Join relationship loading'],
+    exitCriteria: [
+      'Mitigate database N+1 problems via joinedload()',
+      'Run database rollback on session transactions failure'
+    ],
+    dayMissions: [
+      {
+        dayNum: 15,
+        title: 'Asynchronous ORM Sessions',
+        mission: 'Configure async database engines, session context manager scopes, and relationships.',
+        practice: ['One-to-many relationship script', 'Bulk db updates transaction'],
+        miniBuild: 'Order management API with dynamic price calculation database triggers.',
+        exitCriteria: 'Confirm migrations run cleanly without exceptions.'
+      }
+    ]
+  },
+
+  // Phase 6: Full-Stack & AI (Volume 3 Month 6-8)
+  'phase-6': {
+    id: 'phase-6',
+    title: 'Phase 6: Full-Stack & AI Agent Integration',
+    phaseNum: 6,
+    objective: 'Merge React, FastAPI, and Databases. Integrate LLM prompts and vector search capabilities.',
+    technology: 'React + FastAPI + Groq AI',
+    aiStage: 'Stage 4 — Pair programming (Collaborative design with AI mentor)',
+    milestones: [
+      'Connect React client securely to FastAPI backend',
+      'Embed vector databases for RAG question answering',
+      'Build multi-step AI agents using LangGraph'
+    ],
+    capabilitiesUnlocked: ['Full-stack architectures', 'Semantic vector search', 'Agentic AI state machines'],
+    exitCriteria: [
+      'Can you ingest a text document, vector search the chunks, and generate an answer in under 1 hour?',
+      'Can you containerize the entire application in a docker-compose environment?'
+    ],
+    dayMissions: []
+  },
+  'week-13': {
+    id: 'week-13',
+    title: 'Week 13: Full-Stack Integration',
+    phaseNum: 6,
+    objective: 'Build unified full-stack layouts with cross-origin security configurations.',
+    technology: 'React / FastAPI',
+    aiStage: 'Stage 3 — Review after build',
+    milestones: ['Configure CORS policies', 'Fetch data in React from local backend'],
+    capabilitiesUnlocked: ['CORS policies', 'Client token storage', 'State sync hooks'],
+    exitCriteria: [
+      'Synchronize client auth tokens across tabs',
+      'Handle connection lost events gracefully'
+    ],
+    dayMissions: [
+      {
+        dayNum: 16,
+        title: 'CORS & Client Fetch Operations',
+        mission: 'Deploy CORS middleware, parse requests headers, and bind state setters to fetched API payloads.',
+        practice: ['Secure client fetch hook', 'JSON Web Token parsing script'],
+        miniBuild: 'EJP V0.1 complete layout connecting the React frontend visual visualizer to SQLite db endpoints.',
+        exitCriteria: 'Verify zero CORS blockages across fetch requests.'
+      }
+    ]
+  },
+  'week-14': {
+    id: 'week-14',
+    title: 'Week 14: LLM APIs & Vector Search (RAG)',
+    phaseNum: 6,
+    objective: 'Generate text embedding vectors and build Retrieval-Augmented Generation loops.',
+    technology: 'Groq / pgvector',
+    aiStage: 'Stage 4 — AI Pair programming',
+    milestones: ['Generate document embeddings', 'Retrieve semantic search chunks'],
+    capabilitiesUnlocked: ['Vector representations', 'Similarity queries', 'Context prompt packing'],
+    exitCriteria: [
+      'Ingest and chunk text files',
+      'Build cosine similarity database query'
+    ],
+    dayMissions: [
+      {
+        dayNum: 17,
+        title: 'Structured LLM Outputs',
+        mission: 'Invoke LLM APIs, pass system prompts, configure temperature parameters, and enforce JSON formats.',
+        practice: ['JSON schema prompt mapping', 'Dynamic search embedding generator'],
+        miniBuild: 'AI Study Assistant summarizing text files and answering questions from local vector databases.',
+        exitCriteria: 'Show structured JSON output from LLM API query.'
+      }
+    ]
+  },
+  'week-15': {
+    id: 'week-15',
+    title: 'Week 15: Agentic AI & LangGraph Workflows',
+    phaseNum: 6,
+    objective: 'Design stateful agent nodes, routing paths, and database state updates.',
+    technology: 'LangGraph',
+    aiStage: 'Stage 4 — AI Pair programming',
+    milestones: ['Define agent states', 'Implement conditional routes'],
+    capabilitiesUnlocked: ['State graphs', 'AI tools execution loops', 'State serialization'],
+    exitCriteria: [
+      'Run multi-turn conversation with memory',
+      'Inject tool call execution outputs into prompt context'
+    ],
+    dayMissions: [
+      {
+        dayNum: 18,
+        title: 'LangGraph Nodes & Router Logic',
+        mission: 'Declare graph states, node routers, conditional edge loops, and tool execution frameworks.',
+        practice: ['Memory state context script', 'Conditional edge branching test'],
+        miniBuild: 'AI Task agent updating the database when user requests task updates in natural language.',
+        exitCriteria: 'Demonstrate functional tool routing in local terminals.'
+      }
+    ]
+  },
+
+  // Phase 7: Placement Preparation & System Design (Volume 4)
+  'phase-7': {
+    id: 'phase-7',
+    title: 'Phase 7: System Design & Placement Season',
+    phaseNum: 7,
+    objective: 'Exhaustively study large-scale architecture design and solve complex DSA under pressure.',
+    technology: 'System Architecture / DSA',
+    aiStage: 'Stage 5 — AI Acceleration (AI used for speed and boilerplate, concept is fully understood)',
+    milestones: [
+      'Complete full system designs in under 45 minutes',
+      'Perform scale, bandwidth, and database queries calculations',
+      'Solve medium-hard LeetCode problems in 20 minutes under timed conditions'
+    ],
+    capabilitiesUnlocked: ['Horizontal scaling architecture', 'Complexity optimizations', 'Technical communication'],
+    exitCriteria: [
+      'Can you sketch a complete video transcoding system architecture (YouTube)?',
+      'Can you explain the celeb write-amplification problem in timeline feeds?'
+    ],
+    dayMissions: []
+  },
+  'week-16': {
+    id: 'week-16',
+    title: 'Week 16: Horizontal Scaling & Caching',
+    phaseNum: 7,
+    objective: 'Examine consistent hashing, CDN origin pulls, and cache invalidation strategies.',
+    technology: 'System Design',
+    aiStage: 'Stage 5 — AI Acceleration',
+    milestones: ['Scale URL shortener database', 'Design cache policies'],
+    capabilitiesUnlocked: ['Database replication', 'Redis configuration', 'Rate limiter filters'],
+    exitCriteria: [
+      'Write scale calculation estimations for 10M DAU write loads',
+      'Diagram load balancer configurations'
+    ],
+    dayMissions: [
+      {
+        dayNum: 19,
+        title: 'System Design: Scaling Timeline Feeds',
+        mission: 'Evaluate write-heavy feed architectures, push vs pull strategies, and Redis layout storage.',
+        practice: ['Estimations calculations cheat sheet', 'Database schema layout draft'],
+        miniBuild: 'High-level architectural blueprint for a distributed social feed platform.',
+        exitCriteria: 'Identify single points of failure in the design.'
+      }
+    ]
+  },
+  'week-17': {
+    id: 'week-17',
+    title: 'Week 17: Competitive DSA Sprint',
+    phaseNum: 7,
+    objective: 'Examine advanced dynamic programming, topological sorting, and heap intervals.',
+    technology: 'DSA',
+    aiStage: 'Stage 5 — AI Acceleration',
+    milestones: ['Solve 30+ medium dynamic programming problems', 'Solve 10 topological sort graphs problems'],
+    capabilitiesUnlocked: ['Dynamic programming memorization', 'Topological traversals', 'Heap heap operations'],
+    exitCriteria: [
+      'Implement course scheduler Topological Sort in <20 minutes',
+      'Explain coin change recursive tree pruning parameters'
+    ],
+    dayMissions: [
+      {
+        dayNum: 20,
+        title: 'Dynamic Programming: Knapsack Variations',
+        mission: 'Examine base state equations, memoization recursion, and bottom-up iterations.',
+        practice: ['Coin Change problem', 'Word Break solver', 'LIS dynamic array'],
+        miniBuild: 'Complexity benchmarking report comparing dynamic memory algorithms vs brute force searches.',
+        exitCriteria: 'Solve Coin Change with O(N*M) space complexity.'
+      }
+    ]
+  },
+  'week-18': {
+    id: 'week-18',
+    title: 'Week 18: Mock Interviews & Funnels',
+    phaseNum: 7,
+    objective: 'Refine technical communication under pressure. Build application funnels.',
+    technology: 'Interview Drills',
+    aiStage: 'Stage 5 — AI Acceleration',
+    milestones: ['Complete 5 system design mock interviews', 'Review 10 candidate resumes'],
+    capabilitiesUnlocked: ['Whiteboard communication', 'Quantifying bullet achievements', 'Salary negotiation tactics'],
+    exitCriteria: [
+      'Pitch project in 5 minutes using the STAR framework',
+      'Achieve 10+ target applications per week target'
+    ],
+    dayMissions: [
+      {
+        dayNum: 21,
+        title: 'Behavioral STAR Framework Drills',
+        mission: 'Examine situational interview questions, draft accomplishment logs, and optimize resumes.',
+        practice: ['15 target questions answers sheet', 'Resume edit commits'],
+        miniBuild: 'Personal application tracking funnel database logs.',
+        exitCriteria: 'Pass peer portfolio audit checklists.'
+      }
+    ]
+  },
+
+  // Phase 8: Professional Growth & Compounding (Volume 5)
+  'phase-8': {
+    id: 'phase-8',
+    title: 'Phase 8: Career Engineering & Compounding',
+    phaseNum: 8,
+    objective: 'Excel in your first professional role. Onboard, contribute, review code, and design career trajectory.',
+    technology: 'Professional Engineering',
+    aiStage: 'Stage 5 — AI Acceleration',
+    milestones: [
+      'Map data flows in production codebases within 1 week of onboarding',
+      'Establish continuous learning models (foundations, principles, tools)',
+      'Deliver high-quality peer code reviews'
+    ],
+    capabilitiesUnlocked: ['Production codebases comprehension', 'Continuous technical writing', 'Team leadership'],
+    exitCriteria: [
+      'Write a 1-page technical design document for a feature option',
+      'Examine onboarding checkpoints logs for first 90 days'
+    ],
+    dayMissions: []
+  },
+  'week-19': {
+    id: 'week-19',
+    title: 'Week 19: Onboarding & Production Engineering',
+    phaseNum: 8,
+    objective: 'Excel in the first 90 days. Onboard, understand build systems, and execute first tickets.',
+    technology: 'Onboarding',
+    aiStage: 'Stage 5 — AI Acceleration',
+    milestones: ['Execute first PR in new repository', 'Map server architecture'],
+    capabilitiesUnlocked: ['Onboarding systems', 'Production safety tests', 'Codebase navigations'],
+    exitCriteria: [
+      'Draw production deployment pipeline flow',
+      'Complete local database configuration setup'
+    ],
+    dayMissions: [
+      {
+        dayNum: 22,
+        title: 'First 90 Days Execution Blueprint',
+        mission: 'Examine repository architectures, parse pull request guidelines, and set up manager 1:1 agendas.',
+        practice: ['Production database layout map', 'Merged PR logs overview notes'],
+        miniBuild: 'Personal Onboarding checklist logs for the first 30 days.',
+        exitCriteria: 'Map critical service dependencies without guidebooks.'
+      }
+    ]
+  },
+  'week-20': {
+    id: 'week-20',
+    title: 'Week 20: Technical Writing & Collaboration',
+    phaseNum: 8,
+    objective: 'Write technical documentation, participate in code reviews, and plan long-term career growth.',
+    technology: 'Engineering Leadership',
+    aiStage: 'Stage 5 — AI Acceleration',
+    milestones: ['Write post-mortem documentation', 'Provide 5 detailed PR code reviews'],
+    capabilitiesUnlocked: ['Technical documentation styling', 'System post-mortems analysis', 'Team alignment'],
+    exitCriteria: [
+      'Author a complete project README under 2 hours',
+      'Explain incident resolution timeline'
+    ],
+    dayMissions: [
+      {
+        dayNum: 23,
+        title: 'Production Incident Post-Mortem',
+        mission: 'Examine production failures, analyze logs timelines, identify root causes, and write mitigation actions.',
+        practice: ['PR review logs', 'Incident analysis notes'],
+        miniBuild: 'Production Outage Post-Mortem report documenting response efforts.',
+        exitCriteria: 'Ensure zero recurrence of the identified root cause.'
+      }
+    ]
+  }
+};

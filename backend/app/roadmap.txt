@@ -1,0 +1,98 @@
+# PRINCIPAL ENGINEERING ROADMAP — VOLUME 1: EXECUTIVE FOUNDATION
+Student: Kotagiri Sathwik
+Roadmap Start: 26 June 2026
+Target Graduation: May 2027
+
+---
+
+## The Five Engineering Laws
+1. Comfortable implementation is the only gate: Move forward when you can build, explain, modify, and debug independently, not when you have perfected it.
+2. Every technology must unlock something: Python -> Backend logic; SQL -> DB integration; HTML/CSS -> UI; React -> Full Stack UI; FastAPI -> API services; Docker -> Deployment.
+3. Build before moving forward: A phase is complete only when code is built and committed, not when videos are watched.
+4. AI is a reviewer, not the developer: 
+   - Stage 1 (Buffer/Python): Zero AI. Write ALL code manually.
+   - Stage 2 (SQL/Frontend): AI provides hints when stuck.
+   - Stage 3 (FastAPI/Projects): AI reviews code after you write it.
+   - Stage 4 (AI Integration): Pair-program.
+5. Consistency over intensity: 3-4 focused hours daily beats 10-hour weekend sprints.
+
+---
+
+## Buffer Period Daily Missions (26 June – 5 July 2026)
+
+### Day 1: Thursday, 26 June 2026
+*   **Mission**: Anchor Python fundamentals. Rebuild the habit of writing code without assistance.
+*   **Topics**: Variables, data types, operators, input/output, f-strings, conditional logic, truthy/falsy check.
+*   **Practice**: Temperature converter, Grade calculator, CLI calculator, Number reverse, Vowel count, Leap year check.
+*   **Mini Build**: CLI Calculator with input validation (division by zero handling, exit loop, functions).
+*   **Assessment**: Write a function filtering even numbers and a grade calculator with 5 boundaries from memory in under 8 minutes.
+*   **Deliverables**: 10 practice scripts, CLI Calculator, committed to GitHub repository `python-buffer-period`.
+
+### Day 2: Friday, 27 June 2026
+*   **Mission**: Solidify loops until they feel mechanical. Pattern recognition without reference.
+*   **Topics**: For/While loops, loop control (break, continue), enumerate(), zip(), list comprehensions.
+*   **Practice**: Multiplication tables, Prime checker, Fibonacci sequence, Factorial (loop + recursion), Star/number pattern pyramids, FizzBuzz.
+*   **Mini Build**: CLI Number Pattern Generator (Triangle, Pyramid, Diamond menu options).
+*   **Assessment**: Write a loop summing user numbers until negative, and a 5x5 multiplication grid from memory in under 10 minutes.
+*   **Deliverables**: Practice scripts in day02, Pattern Generator CLI, committed.
+
+### Day 3: Saturday, 28 June 2026
+*   **Mission**: Master Python functions.
+*   **Topics**: Function parameters (positional, keyword, defaults), *args/**kwargs, return types, variable scopes, lambda expressions, type hints, docstrings.
+*   **Practice**: Utility functions (is_palindrome, calculate_tax, validate_email, get_letter_grade, reverse_words).
+*   **Mini Build**: Utility Library Package (organized with __init__.py, split into string_utils, number_utils, and validation_utils).
+*   **Assessment**: Write a function that takes student dictionaries and maps grades using your helper in under 8 minutes.
+*   **Deliverables**: utility_library package, main.py demo script, typed and docstringed code.
+
+### Day 4: Sunday, 29 June 2026
+*   **Mission**: Master Python data structures as engineering tools.
+*   **Topics**: Lists, tuples, sets, dictionaries, comprehensions, collections.defaultdict, custom sorting.
+*   **Practice**: Shopping cart, Student dictionary records list, Unique visitor set tracker, config file parser, defaultdict grouping.
+*   **Mini Build**: Personal Expense Tracker CLI (using lists of dicts, sets, dict comprehensions, files save/load).
+*   **Assessment**: Design a Library Management System schema and write a function finding overdue loans in under 15 minutes.
+*   **Deliverables**: day04 scripts, Expense tracker package.
+
+### Day 5: Monday, 30 June 2026
+*   **Mission**: Master strings and file handling.
+*   **Topics**: String methods (split, join, replace, f-strings), file read/write context managers, CSV manual parsing, pathlib.Path, sys.argv arguments.
+*   **Practice**: Log file parser, CSV readers column aggregations, string template placeholder replacement.
+*   **Mini Build**: CLI Log Analyzer (reads filepath from arguments, extracts ERROR/WARNING stats, writes error_report.txt).
+*   **Assessment**: Write CSV reader/writer to lists of dictionaries with exception handlers from memory in under 12 minutes.
+*   **Deliverables**: Log Analyzer package, CSV scripts.
+
+### Day 6: Tuesday, 1 July 2026
+*   **Mission**: Exception handling and Object-Oriented Programming (OOP).
+*   **Topics**: try-except-else-finally block, raising custom exceptions, classes, attributes, encapsulation, inheritance, properties, dunder methods.
+*   **Practice**: BankAccount class with InsufficientFundsException, FileProcessor validation class, Student inheritance override.
+*   **Mini Build**: Student Management System (Student class, Classroom tracker class, save/load features, custom StudentNotFoundError).
+*   **Assessment**: Product class (property validation) + NegativePriceError + loop exception catcher in under 15 minutes.
+*   **Deliverables**: Student Management CLI, OOP exercises.
+
+### Day 7: Wednesday, 2 July 2026
+*   **Mission**: Async Python and event loops.
+*   **Topics**: Event loop, async def, await coroutines, asyncio.gather(), asyncio.sleep(), concurrency comparison.
+*   **Practice**: Concurrency time comparison script (sync vs async sleep), aiofiles file readers.
+*   **Mini Build**: Async Data Aggregator (simulates fetching data concurrently from 3 slow endpoints and merging).
+*   **Assessment**: Write an async gather fetcher from memory, and explain why await cannot be inside synchronous def.
+*   **Deliverables**: Concurrency benchmark outputs, Async Aggregator.
+
+### Day 8: Thursday, 3 July 2026
+*   **Mission**: SQL business aggregation and subqueries.
+*   **Topics**: INNER/LEFT joins, self-joins, subqueries (EXISTS, IN), GROUP BY + HAVING, CASE WHEN conditional aggregation.
+*   **Practice**: 15 Business SQL queries (Top products, revenue per customer, month-on-month aggregation, customer spending comparison).
+*   **Deliverables**: ecommerce_queries.sql database logs in Git.
+
+### Day 9: Friday, 4 July 2026
+*   **Mission**: Advanced SQL: Window functions and optimization.
+*   **Topics**: Window functions (ROW_NUMBER, RANK, DENSE_RANK, LAG, LEAD), PARTITION BY, database indexes, EXPLAIN ANALYZE index audits.
+*   **Practice**: Running customer total spend window, category ranking, monthly change difference LAG tracking.
+*   **Deliverables**: day09 sql script containing EXPLAIN comparison logs.
+
+### Day 10: Saturday, 5 July 2026
+*   **Mission**: Python packaging, modules, dependencies, and environment setup.
+*   **Topics**: Virtual environments, requirements.txt compilation, load_dotenv secrets, system paths.
+*   **Mini Build**: Restructured Expense Tracker (divided into models, storage, analytics, cli, and config packages).
+*   **Deliverables**: Restructured package, requirements.txt, .env config settings.
+
+### Day 11: Sunday, 6 July 2026
+*   **Mission**: Buffer review, Git cleanups, and Semester 3-1 schedule calibration.

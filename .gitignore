@@ -1,0 +1,17 @@
+# Python dependencies
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Node dependencies
+node_modules/
+dist/
+.eslintcache
+
+# OS files
+.DS_Store
+Thumbs.db
