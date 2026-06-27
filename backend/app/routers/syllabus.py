@@ -8,7 +8,7 @@ router = APIRouter(prefix="/syllabus", tags=["Syllabus"])
 # Locate the syllabus.json path dynamically relative to the current file
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
 SYLLABUS_PATH = os.path.join(DATA_DIR, "syllabus.json")
-DOCS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "docs")
+DOCS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), "docs")
 
 def load_syllabus_data() -> dict:
     if not os.path.exists(SYLLABUS_PATH):

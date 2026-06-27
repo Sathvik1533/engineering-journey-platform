@@ -32,6 +32,11 @@ class DebugResponse(BaseModel):
     hint: str
     explanation: str
     suggested_fix: str
+def is_api_key_placeholder(key: Optional[str]) -> bool:
+    if not key:
+        return True
+    k = key.strip()
+    return k == "" or "your_" in k.lower() or "placeholder" in k.lower() or k == "your_groq_api_key_here"
 
 def read_file_safe(filepath: str, default_content: str = "") -> str:
     if os.path.exists(filepath):
@@ -121,10 +126,8 @@ The JSON object MUST contain exactly two keys:
 
 If no update is requested, return "actions": [].
 """
-
-    if not settings.GROQ_API_KEY or settings.GROQ_API_KEY.strip() == "":
+    if is_api_key_placeholder(settings.GROQ_API_KEY):
         return handle_mock_chat(payload.messages[-1].content, state)
-
     messages_payload = [{"role": "system", "content": system_prompt}]
     for msg in payload.messages:
         messages_payload.append({"role": msg.role, "content": msg.content})
@@ -208,7 +211,7 @@ You must respond with a JSON object containing exactly three keys:
 Format the output strictly as a JSON object. Do not include markdown wraps (```json) in your raw response.
 """
 
-    if not settings.GROQ_API_KEY or settings.GROQ_API_KEY.strip() == "":
+    if is_api_key_placeholder(settings.GROQ_API_KEY):
         return DebugResponse(
             hint="Try checking your syntax or variables.",
             explanation="Groq API Key is not set, so mock debug response is active.",
