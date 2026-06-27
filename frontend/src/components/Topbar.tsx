@@ -11,16 +11,7 @@ interface TopbarProps {
   onToggleProfile: () => void;
 }
 
-const navItems = [
-  { id: 'roadmap', label: 'Roadmap' },
-  { id: 'dashboard', label: 'Mission Control' },
-  { id: 'phases', label: 'Curriculum' },
-  { id: 'handbook', label: 'Handbook' },
-  { id: 'risk', label: 'Risks' }
-];
-
 export const Topbar: React.FC<TopbarProps> = ({ 
-  activeTab,
   setActiveTab,
   theme, 
   setTheme, 
@@ -53,8 +44,9 @@ export const Topbar: React.FC<TopbarProps> = ({
       {/* Left: Brand Logo (roadmap.sh style) */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }} onClick={() => setActiveTab('roadmap')}>
         <div style={{
-          background: 'var(--accent)',
-          color: '#fff',
+          background: '#0f172a',
+          color: '#eab308',
+          border: '2px solid #0f172a',
           borderRadius: '6px',
           width: '28px',
           height: '28px',
@@ -62,7 +54,7 @@ export const Topbar: React.FC<TopbarProps> = ({
           alignItems: 'center',
           justifyContent: 'center'
         }}>
-          <Cpu size={16} />
+          <Cpu size={14} />
         </div>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <span style={{ fontSize: '0.85rem', fontWeight: 800, letterSpacing: '0.04em', color: 'var(--text)' }}>
@@ -74,43 +66,8 @@ export const Topbar: React.FC<TopbarProps> = ({
         </div>
       </div>
 
-      {/* Center: Clean Horizontal Navigation Links (roadmap.sh style) */}
-      <nav style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-        {navItems.map((item) => {
-          const isActive = activeTab === item.id;
-          return (
-            <button
-              key={item.id}
-              onClick={() => setActiveTab(item.id)}
-              style={{
-                background: isActive ? 'var(--accent-dim)' : 'transparent',
-                color: isActive ? 'var(--accent-light)' : 'var(--text2)',
-                border: 'none',
-                padding: '6px 12px',
-                borderRadius: '6px',
-                fontSize: '0.82rem',
-                fontWeight: isActive ? 700 : 500,
-                cursor: 'pointer',
-                transition: 'all 0.15s ease'
-              }}
-              onMouseEnter={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.color = 'var(--text)';
-                  e.currentTarget.style.background = 'var(--bg4)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.color = 'var(--text2)';
-                  e.currentTarget.style.background = 'transparent';
-                }
-              }}
-            >
-              {item.label}
-            </button>
-          );
-        })}
-      </nav>
+      {/* Center: Removed navigation tabs since graph is the single primary viewport */}
+      <div style={{ flex: 1 }} />
 
       {/* Right: Actions (Status, AI toggle, Theme, Profile) */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -126,26 +83,27 @@ export const Topbar: React.FC<TopbarProps> = ({
         <button 
           onClick={onToggleAi}
           style={{
-            background: 'var(--accent-dim)',
-            border: '1px solid rgba(99, 102, 241, 0.25)',
-            color: 'var(--accent-light)',
+            background: '#eab308',
+            border: '2px solid #0f172a',
+            color: '#0f172a',
             cursor: 'pointer',
-            padding: '6px 12px',
+            padding: '6px 14px',
             borderRadius: '6px',
             display: 'flex',
             alignItems: 'center',
             gap: '6px',
             fontSize: '0.8rem',
-            fontWeight: 600,
-            transition: 'all 0.15s ease'
+            fontWeight: 800,
+            transition: 'all 0.15s ease',
+            boxShadow: '2px 2px 0 #0f172a'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'var(--accent)';
-            e.currentTarget.style.color = '#fff';
+            e.currentTarget.style.transform = 'translate(-1px, -1px)';
+            e.currentTarget.style.boxShadow = '3px 3px 0 #0f172a';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'var(--accent-dim)';
-            e.currentTarget.style.color = 'var(--accent-light)';
+            e.currentTarget.style.transform = 'none';
+            e.currentTarget.style.boxShadow = '2px 2px 0 #0f172a';
           }}
           title="Open AI Mentor"
         >
@@ -181,36 +139,37 @@ export const Topbar: React.FC<TopbarProps> = ({
             alignItems: 'center',
             gap: '8px',
             cursor: 'pointer',
-            padding: '4px 8px',
+            padding: '4px 10px',
             borderRadius: '6px',
-            border: '1px solid var(--border)',
-            background: 'var(--bg3)',
-            transition: 'all 0.15s ease'
+            border: '2px solid #0f172a',
+            background: '#ffffff',
+            transition: 'all 0.15s ease',
+            boxShadow: '2px 2px 0 #0f172a'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.4)';
-            e.currentTarget.style.background = 'var(--bg4)';
+            e.currentTarget.style.transform = 'translate(-1px, -1px)';
+            e.currentTarget.style.boxShadow = '3px 3px 0 #0f172a';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = 'var(--border)';
-            e.currentTarget.style.background = 'var(--bg3)';
+            e.currentTarget.style.transform = 'none';
+            e.currentTarget.style.boxShadow = '2px 2px 0 #0f172a';
           }}
         >
           <div style={{
             width: '22px',
             height: '22px',
             borderRadius: '50%',
-            background: 'var(--accent)',
-            color: '#fff',
+            background: '#0f172a',
+            color: '#eab308',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: '0.7rem',
-            fontWeight: 700
+            fontWeight: 800
           }}>
             KS
           </div>
-          <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text)' }}>
+          <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text)' }}>
             Kotagiri Sathvik
           </span>
         </div>

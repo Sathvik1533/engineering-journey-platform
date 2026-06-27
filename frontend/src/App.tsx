@@ -6,7 +6,7 @@ import { RoadmapVisualizer } from './components/RoadmapVisualizer';
 import { PhaseTracker } from './components/PhaseTracker';
 import { RiskRegister } from './components/RiskRegister';
 import { TabContent } from './components/TabContent';
-import { TopicDrawer } from './components/TopicDrawer';
+import { EngineeringWorkspace } from './components/EngineeringWorkspace';
 import { AiMentorDrawer } from './components/AiMentorDrawer';
 import { ProfileDrawer } from './components/ProfileDrawer';
 import { MarkdownReader } from './components/MarkdownReader';
@@ -22,7 +22,7 @@ interface Risk {
 
 function AppContent() {
   const [activeTab, setActiveTab] = useState<string>('roadmap');
-  const [theme, setTheme] = useState<string>('dark');
+  const [theme, setTheme] = useState<string>('light');
   const [isAiOpen, setIsAiOpen] = useState<boolean>(false);
   const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
@@ -221,11 +221,13 @@ function AppContent() {
         </main>
       </div>
 
-      {/* Syllabus Workspace Drawer */}
-      <TopicDrawer 
-        nodeId={selectedNodeId} 
-        onClose={() => setSelectedNodeId(null)} 
-      />
+      {/* Syllabus Workspace Fullscreen View */}
+      {selectedNodeId && (
+        <EngineeringWorkspace 
+          nodeId={selectedNodeId} 
+          onClose={() => setSelectedNodeId(null)} 
+        />
+      )}
 
       {/* AI Mentor Drawer */}
       <AiMentorDrawer 

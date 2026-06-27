@@ -3,7 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from app.database import engine, SessionLocal
 from app.models.base import Base
-from app.routers import mission, phase, risk, ai, state, syllabus, debug
+from app.routers import mission, phase, risk, ai, state, syllabus, debug, knowledge, execute
+from app.services import knowledge_engine
 
 # Lifespan context manager controls application startup and shutdown events
 @asynccontextmanager
@@ -11,6 +12,10 @@ async def lifespan(app: FastAPI):
     # Create all tables on startup if they don't exist yet.
     # This acts as a safety fallback if the developer hasn't run Alembic migrations.
     Base.metadata.create_all(bind=engine)
+    
+    # Initialize the Knowledge Engine
+    # Path is relative to project root where docs/ is located
+    knowledge_engine.initialize(docs_path="../docs")
     
     # Seed database with initial default data if it's empty
     seed_initial_data()
@@ -43,6 +48,8 @@ app.include_router(ai.router)
 app.include_router(state.router)
 app.include_router(syllabus.router)
 app.include_router(debug.router)
+app.include_router(knowledge.router)
+app.include_router(execute.router)
 
 @app.get("/")
 def root():

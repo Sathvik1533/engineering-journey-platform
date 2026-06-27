@@ -54,11 +54,18 @@ export interface SyllabusNode {
   timedAssessment?: TimedAssessment;
 }
 
+export interface KnowledgeGraph {
+  nodes: any[];
+  edges: any[];
+  total_topics: number;
+}
+
 export type SyllabusData = Record<string, SyllabusNode>;
 
 interface EngineeringStateContextProps {
   state: EngineeringState | null;
   syllabus: SyllabusData | null;
+  graph: KnowledgeGraph | null;
   loading: boolean;
   error: string | null;
   isBackendConnected: boolean;
@@ -68,6 +75,7 @@ interface EngineeringStateContextProps {
   setDate: (dateStr: string) => Promise<void>;
   toggleFreeze: (isFreeze: boolean) => Promise<void>;
   refetchState: () => Promise<void>;
+  fetchTopic: (id: string) => Promise<any>;
 }
 
 const EngineeringStateContext = createContext<EngineeringStateContextProps | undefined>(undefined);
@@ -75,6 +83,8 @@ const EngineeringStateContext = createContext<EngineeringStateContextProps | und
 export const EngineeringStateProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, setState] = useState<EngineeringState | null>(null);
   const [syllabus, setSyllabus] = useState<SyllabusData | null>(null);
+  const [graph, setGraph] = useState<KnowledgeGraph | null>(null);
+  const [topicCache, setTopicCache] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isBackendConnected, setIsBackendConnected] = useState<boolean>(false);
@@ -109,10 +119,39 @@ export const EngineeringStateProvider: React.FC<{ children: React.ReactNode }> =
     }
   };
 
+  const fetchGraph = async () => {
+    try {
+      const response = await fetch('/api/knowledge/graph');
+      if (response.ok) {
+        const data = await response.json();
+        setGraph(data);
+      }
+    } catch (err) {
+      console.error('Failed to fetch knowledge graph:', err);
+    }
+  };
+
+  const fetchTopic = async (id: string) => {
+    if (topicCache[id]) {
+      return topicCache[id];
+    }
+    try {
+      const response = await fetch(`/api/knowledge/topics/${id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setTopicCache(prev => ({ ...prev, [id]: data }));
+        return data;
+      }
+    } catch (err) {
+      console.error(`Failed to fetch topic ${id}:`, err);
+    }
+    return null;
+  };
+
   useEffect(() => {
     const initializeData = async () => {
       setLoading(true);
-      await Promise.all([fetchState(), fetchSyllabus()]);
+      await Promise.all([fetchState(), fetchSyllabus(), fetchGraph()]);
       setLoading(false);
     };
     initializeData();
@@ -133,6 +172,8 @@ export const EngineeringStateProvider: React.FC<{ children: React.ReactNode }> =
       const updatedState = await response.json();
       setState(updatedState);
       setIsBackendConnected(true);
+      // Re-fetch graph and recommendations on state updates to keep layout/gates sync
+      await fetchGraph();
     } catch (err: any) {
       console.error(`Failed to trigger event ${eventType}:`, err);
       setIsBackendConnected(false);
@@ -161,6 +202,7 @@ export const EngineeringStateProvider: React.FC<{ children: React.ReactNode }> =
       value={{
         state,
         syllabus,
+        graph,
         loading,
         error,
         isBackendConnected,
@@ -170,6 +212,7 @@ export const EngineeringStateProvider: React.FC<{ children: React.ReactNode }> =
         setDate,
         toggleFreeze,
         refetchState: fetchState,
+        fetchTopic,
       }}
     >
       {children}

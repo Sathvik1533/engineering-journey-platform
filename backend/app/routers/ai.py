@@ -10,6 +10,7 @@ from typing import List, Dict, Any, Optional
 from app.database import get_db
 from app.config import settings
 from app.models.state import EngineeringState
+from app.services import knowledge_engine
 
 router = APIRouter(prefix="/ai", tags=["AI"])
 
@@ -19,6 +20,18 @@ class ChatMessage(BaseModel):
 
 class ChatPayload(BaseModel):
     messages: List[ChatMessage]
+
+class DebugRequest(BaseModel):
+    code: str
+    language: str
+    stdout: str
+    stderr: str
+    topicId: str
+
+class DebugResponse(BaseModel):
+    hint: str
+    explanation: str
+    suggested_fix: str
 
 def read_file_safe(filepath: str, default_content: str = "") -> str:
     if os.path.exists(filepath):
@@ -43,6 +56,8 @@ async def chat_endpoint(payload: ChatPayload, db: Session = Depends(get_db)):
     # Gather database state context
     state = db.execute(select(EngineeringState)).scalars().first()
     state_ctx = "None"
+    topic_ctx = "No current topic details."
+    
     if state:
         state_ctx = (
             f"Current Date: {state.current_date}\n"
@@ -60,22 +75,34 @@ async def chat_endpoint(payload: ChatPayload, db: Session = Depends(get_db)):
             f"Weekly Progress: {state.weekly_progress}%\n"
             f"Is Exam Freeze/Maintenance Active: {state.is_maintenance}\n"
         )
+        # Pull topic data from knowledge engine
+        topic_obj = knowledge_engine.get_topic(state.recommended_task_id)
+        if topic_obj:
+            topic_ctx = (
+                f"Title: {topic_obj.get('title')}\n"
+                f"Mission: {topic_obj.get('mission')}\n"
+                f"Why This Matters: {topic_obj.get('why')}\n"
+                f"Concepts: {', '.join(topic_obj.get('concepts', []))}\n"
+                f"Subtopics: {', '.join(topic_obj.get('subtopics', []))}\n"
+                f"Practice Tasks: {', '.join(topic_obj.get('practice', []))}\n"
+                f"Mini Build: {topic_obj.get('mini_build')}\n"
+                f"Assessment/Exit Criteria: {topic_obj.get('assessment')}\n"
+            )
 
-    roadmap_txt = read_file_safe("app/roadmap.txt", "No roadmap timeline configured.")
     custom_instructions = read_file_safe("app/ai_prompt.txt", "Be a helpful coding tutor.")
 
     system_prompt = f"""
 {custom_instructions}
 
-You are the Engineering OS AI Companion. You have access to the user's current live Engineering State.
-
----
-MASTER ROADMAP:
-{roadmap_txt}
+You are the Engineering OS AI Companion. You have access to the user's current live Engineering State and the details of their current topic.
 
 ---
 CURRENT LIVE STATE:
 {state_ctx}
+
+---
+CURRENT TOPIC METADATA:
+{topic_ctx}
 
 ---
 CRITICAL RULES & RESPONSE FORMAT:
@@ -105,7 +132,7 @@ If no update is requested, return "actions": [].
     try:
         async with httpx.AsyncClient(timeout=30.0) as client:
             res = await client.post(
-                "https://api.groq.com/openapi/v1/chat/completions",
+                "https://api.groq.com/openai/v1/chat/completions",
                 headers={
                     "Authorization": f"Bearer {settings.GROQ_API_KEY.strip()}",
                     "Content-Type": "application/json"
@@ -138,6 +165,89 @@ If no update is requested, return "actions": [].
             "response": f"⚠️ Failed to communicate with Groq: {str(e)}. Offline fallback active.",
             "actions": []
         }
+
+@router.post("/debug", response_model=DebugResponse)
+async def debug_endpoint(payload: DebugRequest):
+    """
+    Code debugger endpoint. Evaluates Monaco editor submissions.
+    """
+    topic_obj = knowledge_engine.get_topic(payload.topicId)
+    topic_info = f"Topic: {payload.topicId}"
+    if topic_obj:
+        topic_info += f"\nTitle: {topic_obj.get('title')}\nConcepts: {', '.join(topic_obj.get('concepts', []))}\nExit Criteria: {', '.join(topic_obj.get('exit_criteria', []))}"
+
+    system_prompt = f"""
+You are a senior engineering mentor code debugger. The user is writing code in the Monaco editor.
+Analyze their code, execution output, and any error message.
+
+---
+TOPIC CONTEXT:
+{topic_info}
+
+---
+CODE WRITTEN BY USER ({payload.language}):
+```
+{payload.code}
+```
+
+---
+EXECUTION OUTPUT STDOUT:
+{payload.stdout}
+
+---
+EXECUTION OUTPUT STDERR / ERRORS:
+{payload.stderr}
+
+---
+INSTRUCTIONS:
+You must respond with a JSON object containing exactly three keys:
+1. "hint": (string) A concise, non-obvious hint to guide them. Do not give away the solution.
+2. "explanation": (string) Explain why the code errored or what logic flaw exists in relation to the concepts.
+3. "suggested_fix": (string) A constructive guideline on how they should modify their code structure.
+
+Format the output strictly as a JSON object. Do not include markdown wraps (```json) in your raw response.
+"""
+
+    if not settings.GROQ_API_KEY or settings.GROQ_API_KEY.strip() == "":
+        return DebugResponse(
+            hint="Try checking your syntax or variables.",
+            explanation="Groq API Key is not set, so mock debug response is active.",
+            suggested_fix="Double check loops and function return types."
+        )
+
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            res = await client.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {settings.GROQ_API_KEY.strip()}",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "model": "llama3-70b-8192",
+                    "messages": [{"role": "system", "content": system_prompt}],
+                    "response_format": {"type": "json_object"},
+                    "temperature": 0.2
+                }
+            )
+            
+            if res.status_code != 200:
+                raise HTTPException(status_code=500, detail="Failed to get debugging advice from AI helper.")
+                
+            completion = res.json()
+            raw_content = completion["choices"][0]["message"]["content"]
+            parsed_res = json.loads(raw_content)
+            
+            return DebugResponse(
+                hint=parsed_res.get("hint", "Verify your variable declarations."),
+                explanation=parsed_res.get("explanation", "Logic checks failed."),
+                suggested_fix=parsed_res.get("suggested_fix", "Refactor the logic.")
+            )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"AI connection error: {str(e)}")
+
+
+
 
 def handle_mock_chat(user_msg: str, state: Optional[EngineeringState]) -> Dict[str, Any]:
     msg_lower = user_msg.lower()

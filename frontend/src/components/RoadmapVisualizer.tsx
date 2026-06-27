@@ -1,6 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { roadmapNodes, roadmapEdges } from '../data/roadmapGraph';
-import type { GraphNode } from '../data/roadmapGraph';
+interface GraphNode {
+  id: string;
+  label: string;
+  type: 'phase' | 'week';
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  prerequisites: string[];
+  unlocks?: string[];
+  effort?: string;
+  relevance?: string;
+  capability?: string;
+  projects?: string;
+}
 import { useEngineeringState } from '../context/EngineeringStateContext';
 import { CheckCircle2, Lock, PlayCircle, Star, ZoomIn, ZoomOut, Maximize, Search, Compass } from 'lucide-react';
 
@@ -9,220 +22,10 @@ interface RoadmapVisualizerProps {
 }
 
 // Full specifications for every node's metadata (prerequisites, unlocks, effort, capability, relevance, projects)
-const nodeMetadata: Record<string, {
-  effort: string;
-  relevance: string;
-  capability: string;
-  projects: string;
-  connections: string;
-}> = {
-  'phase-0': {
-    effort: "15-20 Hours",
-    relevance: "Establishes a rock-solid coding baseline in Python. Hand-write all logic without AI tools.",
-    capability: "OOP Design & Algorithmic scoping",
-    projects: "CLI RPG battle simulator, Student Gradebook",
-    connections: "Unlocks FastAPI backend routing and data schemas"
-  },
-  'week-1': {
-    effort: "6 Hours",
-    relevance: "Pure syntax familiarity, conditionals, looping constructs, scoping mechanics.",
-    capability: "Basic logical structures composition",
-    projects: "Library Catalog search, recursive fact solver",
-    connections: "Unlocks Week 2 complex data structures"
-  },
-  'week-2': {
-    effort: "10 Hours",
-    relevance: "Encapsulation, inheritance, asynchronous concurrency, event loops.",
-    capability: "Async cooperative multitasking",
-    projects: "OOPRPG Monster battler, Async API crawler",
-    connections: "Prerequisite for Phase 1 SQL databases"
-  },
-  'phase-1': {
-    effort: "20-25 Hours",
-    relevance: "Transitions from local program memory to relational persistent storage.",
-    capability: "Relational database schema normalization (3NF)",
-    projects: "Normalized E-Commerce database schema",
-    connections: "Required for FastAPI ORM mappings and SQL integrations"
-  },
-  'week-3': {
-    effort: "8 Hours",
-    relevance: "Primary & foreign keys, constraint checking, inner/outer joins query plans.",
-    capability: "Multi-table analytical queries writing",
-    projects: "University enrollment database script",
-    connections: "Unlocks Week 4 Advanced analytical windowing"
-  },
-  'week-4': {
-    effort: "12 Hours",
-    relevance: "ACID transaction guarantees, index query plan optimizations (EXPLAIN ANALYZE).",
-    capability: "Optimized analytical joins indexing",
-    projects: "Student score auditor metrics schema",
-    connections: "Unlocks Phase 5 FastAPI REST services"
-  },
-  'phase-2': {
-    effort: "15 Hours",
-    relevance: "Build semantic browser layout systems and manage DOM script triggers.",
-    capability: "Browser interfaces, responsive web grids layouts",
-    projects: "Responsive Developer Portfolio Landing Page",
-    connections: "Prerequisite for Phase 3 React components"
-  },
-  'week-5': {
-    effort: "6 Hours",
-    relevance: "Semantic HTML5 containers, CSS Custom variables, Grid and Flexbox alignments.",
-    capability: "Responsive styling layouts layout grids",
-    projects: "Multi-column article catalog",
-    connections: "Unlocks Week 6 JS Dom node interactions"
-  },
-  'week-6': {
-    effort: "9 Hours",
-    relevance: "Asynchronous fetch network calls, Promise.all concurrency, and event delegation loops.",
-    capability: "Async client-side scripting and data injection",
-    projects: "Git public issues search page dashboard",
-    connections: "Prerequisite for Phase 3 React library states"
-  },
-  'phase-3': {
-    effort: "25 Hours",
-    relevance: "Composing reactive component hierarchies. TypeScript type interfaces.",
-    capability: "Type-safe reactive client architecture",
-    projects: "Task stage columns planner UI",
-    connections: "Unlocks React router Context routing"
-  },
-  'week-7': {
-    effort: "12 Hours",
-    relevance: "Lifting component states, unidirectional data binding, array states modifier.",
-    capability: "Parent-child state synchronization components",
-    projects: "Interactive interactive tasks boards",
-    connections: "Unlocks Week 8 TypeScript integration"
-  },
-  'week-8': {
-    effort: "13 Hours",
-    relevance: "UseEffect hooks lifecycle sync, dependency cleanups, custom storage hooks.",
-    capability: "Safe API integrations and side-effect management",
-    projects: "Stock index tracker widget dashboard",
-    connections: "Prerequisite for Phase 4 React Router & Context"
-  },
-  'phase-4': {
-    effort: "20 Hours",
-    relevance: "Single page routing layouts, global Context state providers, chart viz.",
-    capability: "SPA dashboard routing & state container",
-    projects: "Expense Tracker Pro capstone dashboard",
-    connections: "Unlocks Phase 6 Full-Stack AI agent integration"
-  },
-  'week-9': {
-    effort: "10 Hours",
-    relevance: "Nested layout routing config, private authentication guards, theme Context API.",
-    capability: "Global global state Context providers",
-    projects: "Dashboard layout nested view panels",
-    connections: "Unlocks Week 10 capstone UI"
-  },
-  'week-10': {
-    effort: "10 Hours",
-    relevance: "Consolidate React, TS, global context into a production-ready client interface.",
-    capability: "Financial transaction math calculations",
-    projects: "Expense Tracker Pro completed capstone",
-    connections: "Unlocks Phase 6 Full-Stack integrations"
-  },
-  'phase-5': {
-    effort: "25 Hours",
-    relevance: "Asynchronous backend API routes, Pydantic inputs validation, Alembic versions.",
-    capability: "Async RESTful backend server APIs",
-    projects: "CRUD order tracking API endpoints",
-    connections: "Unlocks Phase 6 SQL client integrations"
-  },
-  'week-11': {
-    effort: "12 Hours",
-    relevance: "FastAPI lifespans, ASGI asynchronous loops, Pydantic validation schemas.",
-    capability: "Type-safe validation Pydantic schemas",
-    projects: "Task tracker ASGI server app",
-    connections: "Unlocks Week 12 SQLAlchemy database model mapping"
-  },
-  'week-12': {
-    effort: "13 Hours",
-    relevance: "SQLAlchemy async sessions, N+1 query problems resolution via joinedload.",
-    capability: "Asynchronous ORM transaction routing",
-    projects: "Order tracker database mappings",
-    connections: "Unlocks Phase 6 Full-stack AI agents"
-  },
-  'phase-6': {
-    effort: "35 Hours",
-    relevance: "Connect React to FastAPI, embed pgvector databases, LangGraph agent pipelines.",
-    capability: "AI-enabled full-stack engineering",
-    projects: "AI Study Assistant, LangGraph Task agent",
-    connections: "Prerequisite for Phase 7 System Design season"
-  },
-  'week-13': {
-    effort: "10 Hours",
-    relevance: "CORS middleware policies, JWT token cookies, React async status sync hooks.",
-    capability: "Secure full-stack state synchronization",
-    projects: "EJP V0.1 client-to-backend database bindings",
-    connections: "Unlocks Week 14 RAG pipelines"
-  },
-  'week-14': {
-    effort: "12 Hours",
-    relevance: "Llama3 structured outputs parsing, text embeddings, pgvector query matching.",
-    capability: "Retrieval-Augmented Generation loops",
-    projects: "Vector DB grounded QA study chatbot",
-    connections: "Unlocks Week 15 LangGraph agents"
-  },
-  'week-15': {
-    effort: "13 Hours",
-    relevance: "LangGraph state engines, tool execution loop routing, conversation history memory.",
-    capability: "Multi-agent LangGraph orchestration pipelines",
-    projects: "AI database updates tool calling graph",
-    connections: "Prerequisite for Phase 7 Placement season"
-  },
-  'phase-7': {
-    effort: "40 Hours",
-    relevance: "System architecture, horizontal scaling cache policies, topological sort DSA.",
-    capability: "Competitive coding, distributed systems design",
-    projects: "Video transcoder blueprint, course scheduler solver",
-    connections: "Unlocks Placements Mock interview boards"
-  },
-  'week-16': {
-    effort: "15 Hours",
-    relevance: "Consistent hashing, CDN pulls, Redis caching invalidation, rate limiters.",
-    capability: "Distributed systems scale estimations",
-    projects: "Scale timeline feeds architecture plan",
-    connections: "Unlocks Week 17 DSA topological sort sprint"
-  },
-  'week-17': {
-    effort: "15 Hours",
-    relevance: "Medium-hard Leetcode arrays, graphs topological sorting, interval heaps.",
-    capability: "Dynamic programming memorization recursion",
-    projects: "Competitive DSA topological scheduler report",
-    connections: "Unlocks Week 18 Mock interview funnels"
-  },
-  'week-18': {
-    effort: "10 Hours",
-    relevance: "STAR framework behavioral answers, candidate portfolio review, application tracks.",
-    capability: "Technical whiteboard communication skills",
-    projects: "Mock interview candidate funnels logs",
-    connections: "Unlocks Phase 8 Onboarding OS"
-  },
-  'phase-8': {
-    effort: "30 Hours",
-    relevance: "Excel in professional onboarding, PR reviews, incident post-mortems.",
-    capability: "Professional engineering leadership",
-    projects: "Onboarding first 90 days log docs",
-    connections: "Enters Placements active hiring cycles"
-  },
-  'week-19': {
-    effort: "15 Hours",
-    relevance: "First 90 days roadmap, production build systems mapping, codebase navigations.",
-    capability: "Production build systems mappings",
-    projects: "Onboarding checklist first 30 days log",
-    connections: "Unlocks Week 20 post-mortem writeups"
-  },
-  'week-20': {
-    effort: "15 Hours",
-    relevance: "Incident timelines analysis, incident root causes post-mortems, peer code reviews.",
-    capability: "Incident audit post-mortems documentation",
-    projects: "Production Outage Incident post-mortem log",
-    connections: "Concludes EJP Graduation roadmap"
-  }
-};
-
 export const RoadmapVisualizer: React.FC<RoadmapVisualizerProps> = ({ onSelectNode }) => {
-  const { state } = useEngineeringState();
+  const { state, graph } = useEngineeringState();
+  const roadmapNodes: GraphNode[] = graph?.nodes ?? [];
+  const roadmapEdges = graph?.edges ?? [];
   
   // Zoom & Pan State
   const [zoom, setZoom] = useState<number>(0.9);
@@ -423,19 +226,19 @@ export const RoadmapVisualizer: React.FC<RoadmapVisualizerProps> = ({ onSelectNo
       }}>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
           {/* Box 1: Interactive controls info */}
-          <div style={{ pointerEvents: 'auto', background: 'rgba(3,3,3,0.85)', backdropFilter: 'blur(8px)', padding: '10px 14px', borderRadius: 'var(--radius)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '14px' }}>
+          <div style={{ pointerEvents: 'auto', background: '#ffffff', padding: '10px 14px', borderRadius: 'var(--radius)', border: '2px solid #0f172a', display: 'flex', alignItems: 'center', gap: '14px', boxShadow: 'var(--shadow-sm)' }}>
             <div>
-              <h1 style={{ fontSize: '0.92rem', fontWeight: 800, margin: 0 }}>
+              <h1 style={{ fontSize: '0.92rem', fontWeight: 800, margin: 0, color: '#0f172a' }}>
                 Interactive Roadmap
               </h1>
-              <p style={{ fontSize: '0.7rem', color: 'var(--text3)', margin: '2px 0 0' }}>
-                Drag to pan. Scroll to zoom. Press <kbd style={{ background: 'var(--bg4)', border: '1px solid var(--border)', padding: '1px 4px', borderRadius: '3px', fontSize: '0.62rem', fontFamily: 'var(--mono)' }}>⌘K</kbd> to search.
+              <p style={{ fontSize: '0.7rem', color: '#475569', margin: '2px 0 0' }}>
+                Drag to pan. Scroll to zoom. Press <kbd style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', padding: '1px 4px', borderRadius: '3px', fontSize: '0.62rem', fontFamily: 'var(--mono)' }}>⌘K</kbd> to search.
               </p>
             </div>
             <button 
               className="btn btn-sm" 
               onClick={() => setSearchOpen(true)}
-              style={{ padding: '6px 10px', background: 'var(--bg3)', display: 'flex', gap: '6px', alignItems: 'center', fontSize: '0.75rem' }}
+              style={{ padding: '6px 10px', background: '#f1f5f9', border: '2px solid #0f172a', borderRadius: '4px', display: 'flex', gap: '6px', alignItems: 'center', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}
             >
               <Search size={12} />
               <span>Search</span>
@@ -446,33 +249,32 @@ export const RoadmapVisualizer: React.FC<RoadmapVisualizerProps> = ({ onSelectNo
           {state && state.recommended_task_id !== 'graduation' && (
             <div style={{
               pointerEvents: 'auto',
-              background: 'rgba(3,3,3,0.85)',
-              backdropFilter: 'blur(8px)',
+              background: '#ffffff',
               padding: '10px 16px',
               borderRadius: 'var(--radius)',
-              border: '1px solid var(--border)',
+              border: '2px solid #0f172a',
               display: 'flex',
               alignItems: 'center',
               gap: '14px',
-              boxShadow: '0 0 15px rgba(99, 102, 241, 0.08)'
+              boxShadow: 'var(--shadow-sm)'
             }}>
               <div style={{
-                background: 'var(--amber-dim)',
-                border: '1px solid var(--amber)',
+                background: '#fef3c7',
+                border: '2px solid #d97706',
                 borderRadius: '4px',
                 padding: '2px 6px',
                 fontSize: '0.65rem',
                 fontFamily: 'var(--mono)',
-                color: 'var(--amber)',
-                fontWeight: 700
+                color: '#d97706',
+                fontWeight: 800
               }}>
                 TODAY'S MISSION
               </div>
               <div>
-                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)' }}>
+                <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#0f172a' }}>
                   {state.recommended_task_id.replace('-', ' ').toUpperCase()}
                 </div>
-                <div style={{ fontSize: '0.68rem', color: 'var(--text2)', marginTop: '2px' }}>
+                <div style={{ fontSize: '0.68rem', color: '#475569', marginTop: '2px' }}>
                   {state.current_technology} · {state.current_semester}
                 </div>
               </div>
@@ -486,11 +288,13 @@ export const RoadmapVisualizer: React.FC<RoadmapVisualizerProps> = ({ onSelectNo
                 style={{ 
                   padding: '6px 12px', 
                   fontSize: '0.75rem', 
-                  background: 'var(--accent)', 
-                  borderColor: 'var(--accent)',
-                  color: '#fff',
-                  fontWeight: 600,
-                  cursor: 'pointer'
+                  background: '#eab308', 
+                  border: '2px solid #0f172a',
+                  color: '#0f172a',
+                  fontWeight: 800,
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  boxShadow: '2px 2px 0 #0f172a'
                 }}
               >
                 Open Workspace
@@ -504,28 +308,28 @@ export const RoadmapVisualizer: React.FC<RoadmapVisualizerProps> = ({ onSelectNo
           pointerEvents: 'auto',
           display: 'flex',
           gap: '12px',
-          background: 'rgba(3,3,3,0.85)',
-          backdropFilter: 'blur(8px)',
-          border: '1px solid var(--border)',
+          background: '#ffffff',
+          border: '2px solid #0f172a',
           borderRadius: 'var(--radius)',
           padding: '10px 14px',
-          fontSize: '0.7rem'
+          fontSize: '0.7rem',
+          boxShadow: 'var(--shadow-sm)'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <div style={{ width: '10px', height: '10px', borderRadius: '2px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid var(--green)' }} />
-            <span style={{ color: 'var(--text2)' }}>Done</span>
+            <div style={{ width: '10px', height: '10px', borderRadius: '2px', background: '#ecfdf5', border: '2px solid #0f172a' }} />
+            <span style={{ color: '#475569', fontWeight: 600 }}>Done</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <div style={{ width: '10px', height: '10px', borderRadius: '2px', background: 'var(--accent-dim)', border: '1px solid var(--accent)' }} />
-            <span style={{ color: 'var(--text2)' }}>Active</span>
+            <div style={{ width: '10px', height: '10px', borderRadius: '2px', background: '#ffffff', border: '2px solid #0f172a' }} />
+            <span style={{ color: '#475569', fontWeight: 600 }}>Active</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <div style={{ width: '10px', height: '10px', borderRadius: '2px', background: 'rgba(245, 158, 11, 0.1)', border: '1px solid var(--amber)', boxShadow: '0 0 6px rgba(245, 158, 11, 0.3)' }} />
-            <span style={{ color: 'var(--text2)' }}>Next Target</span>
+            <div style={{ width: '10px', height: '10px', borderRadius: '2px', background: '#fffbeb', border: '2px solid #0f172a' }} />
+            <span style={{ color: '#475569', fontWeight: 600 }}>Next Target</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <div style={{ width: '10px', height: '10px', borderRadius: '2px', background: 'transparent', border: '1px dashed var(--text3)' }} />
-            <span style={{ color: 'var(--text3)' }}>Locked</span>
+            <div style={{ width: '10px', height: '10px', borderRadius: '2px', background: '#f8fafc', border: '2px dashed #cbd5e1' }} />
+            <span style={{ color: '#94a3b8', fontWeight: 600 }}>Locked</span>
           </div>
         </div>
       </div>
@@ -538,23 +342,24 @@ export const RoadmapVisualizer: React.FC<RoadmapVisualizerProps> = ({ onSelectNo
         zIndex: 10,
         display: 'flex',
         flexDirection: 'column',
-        gap: '6px',
-        background: 'var(--bg3)',
-        border: '1px solid var(--border)',
+        gap: '4px',
+        background: '#ffffff',
+        border: '2px solid #0f172a',
         borderRadius: 'var(--radius)',
-        padding: '4px'
+        padding: '4px',
+        boxShadow: 'var(--shadow-sm)'
       }}>
-        <button className="btn btn-sm" onClick={handleZoomIn} style={{ padding: '6px', background: 'transparent', border: 'none' }} title="Zoom In">
-          <ZoomIn size={16} />
+        <button className="btn btn-sm" onClick={handleZoomIn} style={{ padding: '6px', background: 'transparent', border: 'none', cursor: 'pointer' }} title="Zoom In">
+          <ZoomIn size={16} color="#0f172a" />
         </button>
-        <button className="btn btn-sm" onClick={handleZoomOut} style={{ padding: '6px', background: 'transparent', border: 'none' }} title="Zoom Out">
-          <ZoomOut size={16} />
+        <button className="btn btn-sm" onClick={handleZoomOut} style={{ padding: '6px', background: 'transparent', border: 'none', cursor: 'pointer' }} title="Zoom Out">
+          <ZoomOut size={16} color="#0f172a" />
         </button>
-        <button className="btn btn-sm" onClick={handleFitToScreen} style={{ padding: '6px', borderTop: '1px solid var(--border)', background: 'transparent', borderRadius: 0 }} title="Fit to Screen">
-          <Maximize size={14} />
+        <button className="btn btn-sm" onClick={handleFitToScreen} style={{ padding: '6px', borderTop: '2px solid #0f172a', background: 'transparent', borderRadius: 0, cursor: 'pointer' }} title="Fit to Screen">
+          <Maximize size={14} color="#0f172a" />
         </button>
-        <button className="btn btn-sm" onClick={handleRecenterToTarget} style={{ padding: '6px', borderTop: '1px solid var(--border)', background: 'transparent', borderRadius: 0 }} title="Recenter on Active Target">
-          <Compass size={14} style={{ color: 'var(--amber)' }} />
+        <button className="btn btn-sm" onClick={handleRecenterToTarget} style={{ padding: '6px', borderTop: '2px solid #0f172a', background: 'transparent', borderRadius: 0, cursor: 'pointer' }} title="Recenter on Active Target">
+          <Compass size={14} style={{ color: '#d97706' }} />
         </button>
       </div>
 
@@ -641,15 +446,15 @@ export const RoadmapVisualizer: React.FC<RoadmapVisualizerProps> = ({ onSelectNo
               const fromStatus = getNodeStatus(fromNode);
               const toStatus = getNodeStatus(toNode);
 
-              let strokeColor = 'url(#edge-grad-locked)';
+              let strokeColor = '#cbd5e1';
               let strokeWidth = 2.0;
               let strokeDash = undefined;
 
               if (fromStatus === 'done' && toStatus === 'done') {
-                strokeColor = 'url(#edge-grad-done)';
+                strokeColor = '#10b981';
                 strokeWidth = 2.5;
-              } else if (fromStatus === 'done' || fromStatus === 'recommended') {
-                strokeColor = 'url(#edge-grad-active)';
+              } else if (fromStatus === 'done' || fromStatus === 'recommended' || fromStatus === 'active') {
+                strokeColor = '#0f172a';
                 strokeWidth = 2.5;
               } else {
                 strokeDash = '4,4';
@@ -673,36 +478,35 @@ export const RoadmapVisualizer: React.FC<RoadmapVisualizerProps> = ({ onSelectNo
               const status = getNodeStatus(node);
               const isPhase = node.type === 'phase';
               
-              let fill = 'var(--bg2)';
-              let border = 'var(--border)';
+              let fill = '#ffffff';
+              let border = '#0f172a';
               let borderStyle = 'solid';
               let filter = undefined;
-              let titleColor = 'var(--text)';
+              let titleColor = '#0f172a';
               let icon = null;
 
               if (status === 'done') {
-                fill = 'rgba(16, 185, 129, 0.02)';
-                border = 'var(--green)';
-                titleColor = 'var(--text)';
-                icon = <CheckCircle2 size={13} style={{ color: 'var(--green)' }} />;
+                fill = '#ecfdf5';
+                border = '#0f172a';
+                titleColor = '#0f172a';
+                icon = <CheckCircle2 size={13} style={{ color: '#059669' }} />;
               } else if (status === 'recommended') {
-                fill = 'var(--bg3)';
-                border = 'var(--amber)';
+                fill = '#fffbeb';
+                border = '#eab308';
                 filter = 'url(#glow-recommended)';
-                titleColor = 'var(--text)';
-                icon = <Star size={13} style={{ color: 'var(--amber)', fill: 'var(--amber)' }} />;
+                titleColor = '#0f172a';
+                icon = <Star size={13} style={{ color: '#d97706', fill: '#d97706' }} />;
               } else if (status === 'active') {
-                fill = 'var(--accent-dim)';
-                border = 'var(--accent)';
-                filter = 'url(#glow-active)';
-                titleColor = 'var(--text)';
-                icon = <PlayCircle size={13} style={{ color: 'var(--accent)' }} />;
+                fill = '#ffffff';
+                border = '#0f172a';
+                titleColor = '#0f172a';
+                icon = <PlayCircle size={13} style={{ color: '#eab308' }} />;
               } else {
-                fill = 'rgba(10, 10, 12, 0.6)';
-                border = 'var(--text3)';
+                fill = '#f8fafc';
+                border = '#cbd5e1';
                 borderStyle = 'dashed';
-                titleColor = 'var(--text3)';
-                icon = <Lock size={11} style={{ color: 'var(--text3)' }} />;
+                titleColor = '#94a3b8';
+                icon = <Lock size={11} style={{ color: '#cbd5e1' }} />;
               }
 
               return (
@@ -720,11 +524,11 @@ export const RoadmapVisualizer: React.FC<RoadmapVisualizerProps> = ({ onSelectNo
                     y={node.y}
                     width={node.width}
                     height={node.height}
-                    rx={isPhase ? 10 : 6}
-                    ry={isPhase ? 10 : 6}
+                    rx={isPhase ? 8 : 6}
+                    ry={isPhase ? 8 : 6}
                     fill={fill}
                     stroke={border}
-                    strokeWidth={isPhase ? 2 : 1.5}
+                    strokeWidth={status === 'recommended' ? 3 : 2}
                     strokeDasharray={borderStyle === 'dashed' ? '4,4' : undefined}
                     filter={filter}
                     style={{
@@ -749,9 +553,9 @@ export const RoadmapVisualizer: React.FC<RoadmapVisualizerProps> = ({ onSelectNo
                       gap: '8px',
                       width: '100%',
                       height: '100%',
-                      fontFamily: isPhase ? 'var(--sans)' : 'var(--mono)',
+                      fontFamily: 'var(--sans)',
                       fontSize: isPhase ? '0.85rem' : '0.78rem',
-                      fontWeight: isPhase ? 700 : 500,
+                      fontWeight: isPhase ? 800 : 600,
                       color: titleColor,
                       textAlign: 'center',
                       lineHeight: '1.2'
@@ -780,17 +584,17 @@ export const RoadmapVisualizer: React.FC<RoadmapVisualizerProps> = ({ onSelectNo
         left: '24px',
         width: '120px',
         height: '180px',
-        background: 'rgba(10,10,12,0.85)',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid var(--border)',
+        background: '#ffffff',
+        border: '2px solid #0f172a',
         borderRadius: 'var(--radius)',
         padding: '8px',
         pointerEvents: 'none',
         display: 'flex',
         flexDirection: 'column',
-        zIndex: 10
+        zIndex: 10,
+        boxShadow: 'var(--shadow-sm)'
       }}>
-        <div style={{ fontSize: '0.62rem', color: 'var(--text3)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '6px', borderBottom: '1px solid var(--border)', paddingBottom: '3px' }}>
+        <div style={{ fontSize: '0.62rem', color: '#64748b', fontWeight: 800, textTransform: 'uppercase', marginBottom: '6px', borderBottom: '2px solid #0f172a', paddingBottom: '3px' }}>
           Minimap
         </div>
         <svg width="100%" height="100%" viewBox="0 0 820 1500" style={{ overflow: 'visible' }}>
@@ -849,11 +653,10 @@ export const RoadmapVisualizer: React.FC<RoadmapVisualizerProps> = ({ onSelectNo
             </span>
             <h4 style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text)', marginTop: '2px' }}>{hoveredNode.label}</h4>
           </div>
-          
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.75rem' }}>
             <div>
               <strong style={{ color: 'var(--text2)' }}>Estimated Effort: </strong>
-              <span style={{ color: 'var(--text)', fontWeight: 600 }}>{nodeMetadata[hoveredNode.id]?.effort || 'Est. 1 week'}</span>
+              <span style={{ color: 'var(--text)', fontWeight: 600 }}>{hoveredNode.effort || 'Est. 1 week'}</span>
             </div>
             <div>
               <strong style={{ color: 'var(--text2)' }}>Est. Finish: </strong>
@@ -861,14 +664,14 @@ export const RoadmapVisualizer: React.FC<RoadmapVisualizerProps> = ({ onSelectNo
             </div>
             <div>
               <strong style={{ color: 'var(--text2)' }}>Capability Gained: </strong>
-              <span style={{ color: 'var(--text)', fontWeight: 600 }}>{nodeMetadata[hoveredNode.id]?.capability || 'Logical structures'}</span>
+              <span style={{ color: 'var(--text)', fontWeight: 600 }}>{hoveredNode.capability || 'Logical structures'}</span>
             </div>
             <div>
               <strong style={{ color: 'var(--text2)' }}>Related Projects: </strong>
-              <span style={{ color: 'var(--text)', fontWeight: 600 }}>{nodeMetadata[hoveredNode.id]?.projects || 'CLI scripts'}</span>
+              <span style={{ color: 'var(--text)', fontWeight: 600 }}>{hoveredNode.projects || 'CLI scripts'}</span>
             </div>
             <div style={{ borderTop: '1px dashed var(--border)', paddingTop: '6px', color: 'var(--text3)', fontSize: '0.72rem', lineHeight: '1.4' }}>
-              <strong>Relevance:</strong> {nodeMetadata[hoveredNode.id]?.relevance}
+              <strong>Relevance:</strong> {hoveredNode.relevance}
             </div>
           </div>
         </div>
