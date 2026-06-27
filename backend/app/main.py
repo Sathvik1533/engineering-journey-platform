@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from app.database import engine, SessionLocal
 from app.models.base import Base
-from app.routers import mission, phase, risk, ai, state, syllabus
+from app.routers import mission, phase, risk, ai, state, syllabus, debug
 
 # Lifespan context manager controls application startup and shutdown events
 @asynccontextmanager
@@ -42,6 +42,7 @@ app.include_router(risk.router)
 app.include_router(ai.router)
 app.include_router(state.router)
 app.include_router(syllabus.router)
+app.include_router(debug.router)
 
 @app.get("/")
 def root():

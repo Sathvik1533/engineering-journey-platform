@@ -10,6 +10,7 @@ import { TopicDrawer } from './components/TopicDrawer';
 import { AiMentorDrawer } from './components/AiMentorDrawer';
 import { ProfileDrawer } from './components/ProfileDrawer';
 import { MarkdownReader } from './components/MarkdownReader';
+import { DeveloperModeOverlay } from './components/DeveloperModeOverlay';
 
 interface Risk {
   id?: number;
@@ -237,6 +238,9 @@ function AppContent() {
         isOpen={isProfileOpen} 
         onClose={() => setIsProfileOpen(false)} 
       />
+
+      {/* Developer Mode Overlay — Cmd+Shift+D to activate */}
+      <DeveloperModeOverlay />
     </div>
   );
 }
