@@ -28,8 +28,8 @@ export const RoadmapVisualizer: React.FC<RoadmapVisualizerProps> = ({ onSelectNo
   const roadmapEdges = graph?.edges ?? [];
   
   // Zoom & Pan State
-  const [zoom, setZoom] = useState<number>(0.9);
-  const [panOffset, setPanOffset] = useState<{ x: number; y: number }>({ x: 0, y: 10 });
+  const [zoom, setZoom] = useState<number>(0.75);
+  const [panOffset, setPanOffset] = useState<{ x: number; y: number }>({ x: 0, y: 80 });
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [dragStart, setDragStart] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   
@@ -106,8 +106,8 @@ export const RoadmapVisualizer: React.FC<RoadmapVisualizerProps> = ({ onSelectNo
   
   // Fit to screen (centers roadmap tree)
   const handleFitToScreen = () => {
-    setZoom(0.55);
-    setPanOffset({ x: 0, y: 50 });
+    setZoom(0.75);
+    setPanOffset({ x: 0, y: 80 });
   };
 
   const handleRecenterToTarget = () => {
@@ -173,15 +173,17 @@ export const RoadmapVisualizer: React.FC<RoadmapVisualizerProps> = ({ onSelectNo
 
   // Auto focus node (centers graph on search target)
   const focusOnNode = (node: GraphNode) => {
-    // Center of viewport coords
-    const viewportW = viewportRef.current?.clientWidth || 800;
     const viewportH = viewportRef.current?.clientHeight || 600;
     
-    // Calculate required offset to place node in viewport center
-    setZoom(1.1);
+    const targetZoom = 1.0;
+    setZoom(targetZoom);
+    
+    const cx = node.x + node.width / 2;
+    const cy = node.y + node.height / 2;
+    
     setPanOffset({
-      x: (viewportW / 2) - (node.x + node.width / 2) * 1.1,
-      y: (viewportH / 4) - (node.y + node.height / 2) * 1.1
+      x: (410 - cx) * targetZoom,
+      y: (viewportH / 2) - (cy + 30) * targetZoom
     });
     
     onSelectNode(node.id);
@@ -396,7 +398,7 @@ export const RoadmapVisualizer: React.FC<RoadmapVisualizerProps> = ({ onSelectNo
         }}>
           <svg 
             width="820" 
-            height="1500" 
+            height="2800" 
             style={{ overflow: 'visible', display: 'block', margin: '0 auto' }}
           >
             <defs>
